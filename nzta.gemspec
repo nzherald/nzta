@@ -10,8 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['caleb.tutty@nzherald.co.nz']
 
   spec.summary       = %q{NZTA is a gem to query the NZTA InfoConnect REST API}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/nzherald/nzta"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = 'exe'
