@@ -89,8 +89,8 @@ module NZTA
         geometry: {
           type: 'LineString',
           coordinates: [
-            [ segment[:start][:latitude], segment[:start][:longitude] ],
-            [ segment[:end][:latitude], segment[:end][:longitude] ]
+            [ segment[:start][:longitude], segment[:start][:latitude] ],
+            [ segment[:end][:longitude], segment[:end][:latitude] ]
           ]
         },
         properties: {
