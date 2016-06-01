@@ -1,14 +1,16 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "nzta"
+require 'bundler/setup'
+require 'nzta'
+require 'pry'
 
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
 
-# (If you use this, don't forget to add pry to your Gemfile!)
-# require "pry"
-# Pry.start
+Dotenv.load
 
-require "irb"
-IRB.start
+# Client which relies environment variables
+# as a constant to be available inside the pry binding
+Client = NZTA::Client.new
+
+puts 'Use Client to access NZTA::Client instance methods'
+Pry.start
+
