@@ -7,7 +7,6 @@ module NZTA
     attr_reader :http_client
 
     def initialize(options = {})
-      Dotenv.load
       @username    = options.fetch(:username, ENV['NZTA_API_USERNAME'])
       @password    = options.fetch(:password, ENV['NZTA_API_PASSWORD'])
       @http_client = setup_http_client(options[:http_client])
@@ -33,6 +32,17 @@ module NZTA
       map_segments(get_segments(id))
     end
 
+    def segment_geojson(id = nil)
+      segments = generate_segment_map(id)
+
+      features = segments.map {|segment| parse_segment_geojson(segment) }
+
+      {
+        type: 'FeatureCollection',
+        features: features
+      }
+    end
+
     private
 
     def get_xml(url)
@@ -52,35 +62,57 @@ module NZTA
         {
           id: segment.css('id').text,
           name: segment.css('sectionName').text,
-          sectionLength: segment.css('sectionLength').text,
+          section_length: segment.css('sectionLength').text.to_f,
           type: {
-            groupType: segment.css('segmentType groupType').text,
+            group: segment.css('segmentType groupType').text,
             id: segment.css('segmentType id').text,
             name: segment.css('segmentType name').text
           },
           start: {
-            latitude: segment.css('startLocation latitude').text,
-            longitude: segment.css('startLocation longitude').text,
-            speedLimit: segment.css('startLocation speedLimit').text
+            latitude: segment.css('startLocation latitude').text.to_f,
+            longitude: segment.css('startLocation longitude').text.to_f,
+            speed_limit: segment.css('startLocation speedLimit').text.to_i
           },
           end: {
-            latitude: segment.css('endLocation latitude').text,
-            longitude: segment.css('endLocation longitude').text,
-            speedLimit: segment.css('endLocation speedLimit').text
+            latitude: segment.css('endLocation latitude').text.to_f,
+            longitude: segment.css('endLocation longitude').text.to_f,
+            speed_limit: segment.css('endLocation speedLimit').text.to_i
           }
         }
       end
+    end
+
+
+    def parse_segment_geojson(segment)
+      {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [ segment[:start][:latitude], segment[:start][:longitude] ],
+            [ segment[:end][:latitude], segment[:end][:longitude] ]
+          ]
+        },
+        properties: {
+          id: segment[:id],
+          name: segment[:name],
+          length: segment[:section_length],
+          startSpeedLimit: segment[:start][:speed_limit],
+          endSpeedLimit: segment[:end][:speed_limit],
+          type: segment[:type][:name]
+        }
+      }
     end
 
     def process_segments(segments)
       segments.map do |segment|
         {
           id: segment.css('id').text,
-          averageOccupancy: segment.css('averageOccupancy').text,
-          averageSpeed: segment.css('averageSpeed').text,
-          carriagewaySegmentId: segment.css('carriagewaySegmentId').text,
-          defaultSpeed: segment.css('defaultSpeed').text,
-          lastReadingTime: segment.css('lastReadingTime').text,
+          average_occupancy: segment.css('averageOccupancy').text,
+          average_speed: segment.css('averageSpeed').text,
+          carriageway_segment_id: segment.css('carriagewaySegmentId').text,
+          default_speed: segment.css('defaultSpeed').text,
+          last_reading_time: segment.css('lastReadingTime').text,
           reliability: segment.css('reliability').text,
           sectionTime: segment.css('sectionTime').text,
           sectionName: segment.css('sectionName').text
