@@ -66,6 +66,10 @@ representation with:
   client.segment_geojson(5)
 ```
 
+Example output: http://bl.ocks.org/d/be62de78f8c14230f2d95bf987363a44
+
+![Auckland Traffic Segments](http://i.imgur.com/uXcjjbe.png)
+
 
 ## Development
 
