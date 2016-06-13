@@ -115,7 +115,8 @@ module NZTA
           last_reading_time: segment.css('lastReadingTime').text,
           reliability: segment.css('reliability').text,
           sectionTime: segment.css('sectionTime').text,
-          sectionName: segment.css('sectionName').text
+          sectionName: segment.css('sectionName').text,
+          totalVolume: segment.css('totalVolume').text
         }
       end
     end
