@@ -1,4 +1,4 @@
-require 'nokogiri'
+require 'oga'
 
 module NZTA
   class Client
@@ -45,7 +45,7 @@ module NZTA
 
     def get_xml(url)
       resp = http_client.get url
-      Nokogiri::XML(resp).remove_namespaces!
+      Oga.parse_xml(resp)
     end
 
     def get_segments(id = nil)
@@ -106,15 +106,15 @@ module NZTA
       segments.map do |segment|
         {
           id: segment.css('id').text,
-          average_occupancy: segment.css('averageOccupancy').text,
-          average_speed: segment.css('averageSpeed').text,
+          average_occupancy: segment.css('averageOccupancy').text.to_f,
+          average_speed: segment.css('averageSpeed').text.to_f,
           carriageway_segment_id: segment.css('carriagewaySegmentId').text,
-          default_speed: segment.css('defaultSpeed').text,
-          last_reading_time: segment.css('lastReadingTime').text,
-          reliability: segment.css('reliability').text,
-          section_time: segment.css('sectionTime').text,
+          default_speed: segment.css('defaultSpeed').text.to_f,
+          last_reading_time: Time.parse(segment.css('lastReadingTime').text),
+          reliability: segment.css('reliability').text.to_f,
+          section_time: segment.css('sectionTime').text.to_f,
           section_name: segment.css('sectionName').text,
-          total_volume: segment.css('totalVolume').text
+          total_volume: segment.css('totalVolume').text.to_f
         }
       end
     end
