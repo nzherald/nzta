@@ -1,8 +1,6 @@
 # NZTA
 
-NOTE: This is a WIP and incomplete. Some endpoints currently
-only return Nokogiri parsed XML. The intention is to parse this data
-into a hash with relevant keys.
+Work in Progress
 
 You will need to request an API username and password from NZTA by completing this
 form:
