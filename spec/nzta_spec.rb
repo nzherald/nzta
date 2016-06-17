@@ -5,7 +5,8 @@ describe NZTA do
     expect(NZTA::VERSION).not_to be nil
   end
 
-  it 'does something useful' do
-    expect(false).to eq(true)
+  it 'uses BasicHTTPClient by default' do
+    client = NZTA::Client.new
+    expect(client.http_client.class).to be NZTA::BasicHTTPClient
   end
 end
