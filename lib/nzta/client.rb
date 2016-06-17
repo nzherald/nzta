@@ -1,5 +1,3 @@
-require 'dotenv'
-require 'http'
 require 'nokogiri'
 
 module NZTA
@@ -7,9 +5,9 @@ module NZTA
     attr_reader :http_client
 
     def initialize(options = {})
-      @username    = options.fetch(:username, ENV['NZTA_API_USERNAME'])
-      @password    = options.fetch(:password, ENV['NZTA_API_PASSWORD'])
-      @http_client = setup_http_client(options[:http_client])
+      username    = options.fetch(:username, ENV['NZTA_API_USERNAME'])
+      password    = options.fetch(:password, ENV['NZTA_API_PASSWORD'])
+      @http_client = setup_http_client(options[:http_client], username, password)
     end
 
     def traffic_conditions
@@ -121,9 +119,9 @@ module NZTA
       end
     end
 
-    def setup_http_client(http_client)
-      return http_client.new(username: @username, password: @password) unless http_client.nil?
-      HTTP[username: @username, password: @password]
+    def setup_http_client(http_client, username, password)
+      http_client ||= ::NZTA::BasicHTTPClient
+      http_client.new(username: username, password: password)
     end
   end
 end
