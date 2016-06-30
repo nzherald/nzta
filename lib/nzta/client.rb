@@ -20,7 +20,8 @@ module NZTA
     end
 
     def traffic_cameras
-      get_xml 'https://infoconnect1.highwayinfo.govt.nz/ic/jbi/TrafficCameras2/REST/FeedService/'
+      res = get_xml 'https://infoconnect1.highwayinfo.govt.nz/ic/jbi/TrafficCameras2/REST/FeedService/'
+      process_cameras(res)
     end
 
     def segments(id = nil)
@@ -143,6 +144,40 @@ module NZTA
       end
 
       res
+    end
+
+    def process_cameras(cameras)
+      cameras.css('camera').map do |camera|
+        process_camera(camera)
+      end
+    end
+
+    def process_camera(camera)
+      res = {}
+
+      %w(
+        description
+        group
+        id
+        imageUrl
+        lat
+        lon
+        offline
+        region
+        thumbUrl
+        underMaintenance
+        viewUrl
+      ).each do |key|
+        res[key.to_sym] = coerce_if_boolean camera.css(key).text
+      end
+
+      res
+    end
+
+    def coerce_if_boolean(str)
+      return true if str == 'true'
+      return false if str == 'false'
+      str
     end
 
     def setup_http_client(http_client, username, password)
