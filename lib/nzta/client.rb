@@ -11,7 +11,8 @@ module NZTA
     end
 
     def traffic_conditions
-      get_xml 'https://infoconnect1.highwayinfo.govt.nz/ic/jbi/TrafficConditions2/REST/FeedService/'
+      res = get_xml 'https://infoconnect1.highwayinfo.govt.nz/ic/jbi/TrafficConditions2/REST/FeedService/'
+      process_motorway_conditions(res)
     end
 
     def traffic_signs
@@ -117,6 +118,31 @@ module NZTA
           total_volume: segment.css('totalVolume').text.to_f
         }
       end
+    end
+
+    def process_motorway_conditions(conditions)
+      conditions.css('motorways').map do |motorway|
+        process_motorways(motorway)
+      end.flatten
+    end
+
+    def process_motorways(motorway)
+      name = motorway.css('name').first.text
+      motorway.css('locations').map do |location|
+        process_congestion_location(location, name)
+      end
+    end
+
+    def process_congestion_location(location, name)
+      res = {
+        motorway: name,
+      }
+
+      ['congestion', 'direction', 'endLat', 'endLon', 'id', 'inOut', 'name', 'order', 'startLat', 'startLon'].each do |key|
+        res[key.to_sym] = location.css(key).text
+      end
+
+      res
     end
 
     def setup_http_client(http_client, username, password)
