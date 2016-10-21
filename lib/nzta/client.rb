@@ -24,6 +24,10 @@ module NZTA
       process_cameras(res)
     end
 
+    def treis
+      get_xml 'https://infoconnect1.highwayinfo.govt.nz/ic/jbi/TREIS/REST/FeedService/'
+    end
+
     def segments(id = nil)
       process_segments(get_segments(id))
     end
@@ -81,7 +85,6 @@ module NZTA
         }
       end
     end
-
 
     def parse_segment_geojson(segment)
       {

@@ -66,6 +66,15 @@ representation with:
 
 Example output: http://bl.ocks.org/d/be62de78f8c14230f2d95bf987363a44
 
+
+#### Work in progress
+
+```ruby
+  client.treis
+```
+
+Currently the XML representation of the TREIS endpoint. WIP.
+
 ![Auckland Traffic Segments](http://i.imgur.com/uXcjjbe.png)
 
 
